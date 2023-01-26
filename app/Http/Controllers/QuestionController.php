@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Models\question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class QuestionController extends Controller
 {
@@ -14,8 +16,8 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = question::paginate(5);
-        // dd($question);
+        $questions = question::with('user')->latest()->paginate(10);
+        // dd($questions);
         return view('questions.index',compact('questions'));
     }
 
