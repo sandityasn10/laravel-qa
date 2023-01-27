@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Answer;
 use App\Models\question;
 use App\Models\User;
 use Faker\Factory;
@@ -20,10 +21,10 @@ class DatabaseSeeder extends Seeder
     {
 
         User::factory()->count(3)->create()->each(function($u){
-            $u->questions()
-                ->saveMany(
-                    question::factory(rand(1, 5))->make()
-                );
+            $u->questions()->saveMany(question::factory(rand(1, 5))->make())
+            ->each(function($q){
+                $q->answer()->saveMany(Answer::factory(rand(1,5))->make());
+            });
         });
         // \App\Models\User::factory(10)->create();
 
