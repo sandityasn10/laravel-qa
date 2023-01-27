@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Parsedown;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,7 @@ class question extends Model
     }
 
     public function getUrlAttribute(){
-        return route('question.show',$this->id);
+        return route('question.show',$this->slug);
     }
 
     public function getCreatedDateAttribute(){
@@ -38,5 +39,9 @@ class question extends Model
             return "answered";
         }
         return "unanswered";
+    }
+
+    public function getBodyHtmlAttribute(){
+        return Parsedown::instance()->text($this->body);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AskQuestionRequest;
 use DB;
 use App\Models\question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\AskQuestionRequest;
 use Illuminate\Support\Facades\DB as FacadesDB;
 
 class QuestionController extends Controller
@@ -53,7 +54,8 @@ class QuestionController extends Controller
      */
     public function show(question $question)
     {
-        //
+        $question->increment('views');
+        return view('questions.show',compact('question'));
     }
 
     /**
@@ -64,6 +66,9 @@ class QuestionController extends Controller
      */
     public function edit(question $question)
     {
+        if(!Gate::allows('update-question',$question)){
+            abort(403,"access denied");
+        }
         return view('questions.edit',compact('question'));
     }
 
@@ -88,6 +93,9 @@ class QuestionController extends Controller
      */
     public function destroy(question $question)
     {
+        if(!Gate::allows('update-question',$question)){
+            abort(403,"access denied");
+        }
         $question->delete();
         return redirect('/question')->with('success','your question has been delete');
     }
